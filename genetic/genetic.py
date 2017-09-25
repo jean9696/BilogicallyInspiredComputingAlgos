@@ -1,4 +1,5 @@
 from random import shuffle, random, randint
+from sys import argv
 from time import clock
 
 import math
@@ -185,7 +186,6 @@ def getMeanCost(costList):
 
 
 def genetic(filename, separator, nPop, pMutate, deltaStop, selectWithRandomParam=False):
-
     # initialization
     (dataSet, max, min) = readFile(filename, separator)
     parentPop = createPopulation(len(dataSet), nPop)
@@ -255,7 +255,7 @@ def genetic(filename, separator, nPop, pMutate, deltaStop, selectWithRandomParam
         # Calculate cost of new population
         listCost = listOfCosts(dataSet, parentPop, getCost)
 
-        if cptGen % 100 == 1:
+        if cptGen % 20 == 1:
             printMap(parentPop[getIndexMinCost(listCost)], dataSet, cptGen, max, min)
 
         cMin = listCost[getIndexMinCost(listCost)]
@@ -271,4 +271,15 @@ def genetic(filename, separator, nPop, pMutate, deltaStop, selectWithRandomParam
     printResults(results)
 
 
-genetic('cities', ' ', 500, 0.2, 10, False)
+try:
+    filename = argv[1]
+    nPop = int(argv[2])
+    pMutate = float(argv[2])
+    stopDeltaRate = float(argv[3])
+except IndexError:
+    filename = 'genetic/cities'
+    nPop = 100
+    pMutate = 0.5
+    stopDeltaRate = 0.1
+
+genetic(filename, ' ', nPop, pMutate, stopDeltaRate, False)

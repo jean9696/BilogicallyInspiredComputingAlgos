@@ -278,8 +278,8 @@ try:
     stopDeltaRate = float(argv[3])
 except IndexError:
     filename = 'genetic/cities'
-    nPop = 100
-    pMutate = 0.5
-    stopDeltaRate = 0.1
+    nPop = 10
+    pMutate = 0.2
+    stopDeltaRate = 5
 
 genetic(filename, ' ', nPop, pMutate, stopDeltaRate, False)

@@ -1,6 +1,7 @@
 import numpy as np
 import time
 from matplotlib import pyplot as plt
+import matplotlib.patches as mpatches
 
 nIn = 1
 nHidden = 5
@@ -60,7 +61,7 @@ params = [V, W, bV, bW]
 
 
 def functionToLearn(x):
-    return np.sin(x)
+    return np.cos(x)
 
 
 def normalize(x, back=False):
@@ -85,7 +86,7 @@ normalizedDataOut = normalizeData(dataOut)
 
 
 # compare
-def compare(params):
+def compare(params, title):
     plt.clf()
     predictions = []
     realResults = []
@@ -100,14 +101,18 @@ def compare(params):
     ax1 = fig.add_subplot(211)
     ax1.scatter(index, realResults, c='r')
     ax1.scatter(index, normalizeData(predictions, True), c='b')
+    blue_patch = mpatches.Patch(color='blue', label='Predicted results')
+    red_patch = mpatches.Patch(color='red', label='Real results')
+    plt.legend(handles=[blue_patch, red_patch])
     ax1.grid(True)
+    plt.title(title)
 
     plt.ion()
     plt.pause(0.0001)
 
 
 # training
-for epoch in range(1000):
+for c in range(800):
     err = []
     upd = [0] * len(params)
 
@@ -121,8 +126,10 @@ for epoch in range(1000):
             upd[j] = learningRate * grad[j] + momentum * upd[j]
 
         err.append(cost)
-    if epoch % 50 == 0:
-        compare(params)
-    print('Epoch:%d, Cost: %.8f, Time: %fs' % (epoch + 1, np.mean(err), time.clock() - t0))
+    if c % 10 == 0:
+        compare(params, 'Training loop number %d, Cost: %.8f' % (c + 1, np.mean(err)))
+    print('Epoch:%d, Cost: %.8f, Time: %fs' % (c + 1, np.mean(err), time.clock() - t0))
 
 plt.show()
+plt.pause(99999999999)
+

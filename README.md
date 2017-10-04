@@ -9,3 +9,9 @@ Data from [here](http://www.math.uwaterloo.ca/tsp/world/countries.html)
 
 ![Map](https://github.com/jean9696/BilogicallyInspiredComputingAlgos/blob/master/genetic/exemples/mapExemple.png)
 ![Results](https://github.com/jean9696/BilogicallyInspiredComputingAlgos/blob/master/genetic/exemples/resultsExemple.png)
+
+## Neural Network
+
+### Exemple with cosinus function
+
+![Map](https://github.com/jean9696/BilogicallyInspiredComputingAlgos/blob/master/neuralNetwork.gif)

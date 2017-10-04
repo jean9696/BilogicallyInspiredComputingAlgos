@@ -6,7 +6,7 @@ nIn = 1
 nHidden = 5
 nOut = 1
 
-nSamples = 100
+nSamples = 5000
 
 learningRate = 0.01
 momentum = 0.9
@@ -35,7 +35,7 @@ def train(x, t, v, w, bV, bW):
     # predict our cost
     dW = np.outer(Z, Ew)
     dV = np.outer(x, Ev)
-    # print(x, t, Y)
+
     # mean squared error
     cost = ((Y - t) ** 2).mean()
 
@@ -60,48 +60,69 @@ params = [V, W, bV, bW]
 
 
 def functionToLearn(x):
-    return np.cos(x)
+    return np.sin(x)
+
+
+def normalize(x, back=False):
+    if back:
+        return x * 10.0 - 5.0
+    else:
+        return np.true_divide(x + 5, 10)
+
+
+def normalizeData(data, back=False):
+    x = []
+    for y in data:
+        x.append(normalize(y, back))
+    return x
 
 
 # generate data
-dataIn = np.random.rand(nSamples, nIn)
+dataIn = np.random.uniform(-5, 5, size=(nSamples, nOut))
 dataOut = functionToLearn(dataIn)
-print(dataIn, dataOut)
+normalizedDataIn = normalizeData(dataIn)
+normalizedDataOut = normalizeData(dataOut)
+
+
+# compare
+def compare(params):
+    plt.clf()
+    predictions = []
+    realResults = []
+    index = []
+    for y in np.random.uniform(-5, 5, size=(100, nOut)):
+        predictions.append(predict(normalize(y[0]), *params))
+        index.append(y[0])
+        realResults.append(functionToLearn(y[0]))
+
+    fig = plt.figure(1)
+
+    ax1 = fig.add_subplot(211)
+    ax1.scatter(index, realResults, c='r')
+    ax1.scatter(index, normalizeData(predictions, True), c='b')
+    ax1.grid(True)
+
+    plt.ion()
+    plt.pause(0.0001)
+
 
 # training
-for epoch in range(100):
+for epoch in range(1000):
     err = []
     upd = [0] * len(params)
 
     t0 = time.clock()
     # for each data point, update our weights
     for i in range(dataIn.shape[0]):
-        cost, grad = train(dataIn[i], dataOut[i], *params)
+        cost, grad = train(normalizedDataIn[i], normalizedDataOut[i], *params)
         # update cost
         for j in range(len(params)):
             params[j] -= upd[j]
-
-        for j in range(len(params)):
             upd[j] = learningRate * grad[j] + momentum * upd[j]
 
         err.append(cost)
-
+    if epoch % 50 == 0:
+        compare(params)
     print('Epoch:%d, Cost: %.8f, Time: %fs' % (epoch + 1, np.mean(err), time.clock() - t0))
-
-# compare
-predictions = []
-realResults = []
-index = []
-for y in dataIn:
-    predictions.append(predict(y[0], *params))
-    index.append(y[0])
-    realResults.append(functionToLearn(y[0]))
-
-fig = plt.figure(1)
-
-ax1 = fig.add_subplot(211)
-ax1.scatter(index, realResults, c='r')
-ax1.scatter(index, predictions, c='b')
-ax1.grid(True)
 
 plt.show()
